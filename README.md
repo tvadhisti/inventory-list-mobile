@@ -228,4 +228,71 @@ child: InkWell(
 
 
 
+## Assignment 8
+
+**1. ```Navigator.push()``` vs ```Navigator.pushReplacement()```**
+
+In Flutter, when you want to move from one screen to another, we can use Navigator.push() to add a new screen on top. It is like stacking papers, and we can go back to the previous one with a back button. For example, we'd use it like this:
+```
+Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => ShopFormPage()),
+);
+```
+Now, if we want to replace the current screen entirely with a new one, so there is no going back, we'd use Navigator.pushReplacement(). It is like swapping one paper for another:
+```
+Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(builder: (context) => ShopFormPage()),
+);
+```
+
+**2. Layout Widget in Flutter and Their Respective Usage Contexts**
+
+1. Container:  A flexible widget that can hold other widgets.
+
+2. Gridview: Organizes children in a two-dimensional grid.
+
+3. Card: Constructs a material design card with rounded corners.
+
+4. ListView: Presents a scrolling, linear list of widgets.
+
+5. Row and Column: Ideal for linear arrangements of widgets.
+
+6. Stack: Overlays widgets on top of each other.
+
+7. Wrap: Wraps children to the next line when reaching the screen edge.
+
+8. Expanded and Flexible:
+
+  • Expanded: Occupies available space and enables its child to expand.
+
+  • Flexible: Similar to Expanded but provides additional customization.
+   
+10. SizedBox: Sets a fixed size for its child or enforces a minimum/maximum size.
+    
+11. Flow: Arranges children in a flow layout algorithm.
+    
+13. AspectRatio: Enforces a specific aspect ratio for its child.
+
+
+
+
+**4. Clean Architecture in A Flutter**
+
+In Flutter, Clean Architecture means arranging our code in different layers so it is easier to manage and test. There are several layers:
+
+1. Domain layer: This is where we define the main rules of the application
+   
+3. Data layer: It deals with external data, such as data from the internet or databases
+   
+5. Framework layer: This layer contains Flutter-specific code, like UI components
+   
+7. Dependency rule: This ensures a clean and modular structure by specifying the direction of dependencies
+   
+9. Testing: Involves checking if different layers work correctly
+    
+11. Presentation Layer (Optional): This layer focuses on how things look
+    
+13. Design Patterns: Refers to the use of design patterns to achieve clean code
 
