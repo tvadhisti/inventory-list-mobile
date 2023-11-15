@@ -276,8 +276,16 @@ Navigator.pushReplacement(
 13. AspectRatio: Enforces a specific aspect ratio for its child.
 
 
+**3. List the form input elements you used in this assignment and explain why you used these input elements!**
 
+In my assignment, several form input elements from Flutter were used to collect user input in the application:
 
+1. TextFormField: This element is suitable for fields like the item name, amount, and description, where users need to type in text. It provides features like hint text, validation, and real-time updates.
+   
+2. ElevatedButton: The "Save" button is crucial for submitting the form. ElevatedButton is offering a visible and interactive button.
+   
+3. AlertDialog: An AlertDialog informs the user that the product has been saved.
+    
 **4. Clean Architecture in A Flutter**
 
 In Flutter, Clean Architecture means arranging our code in different layers so it is easier to manage and test. There are several layers:
