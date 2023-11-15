@@ -76,7 +76,7 @@ class _ShopFormPageState extends State<ShopFormPage> {
                       return "Amount cannot be empty!";
                     }
                     if (int.tryParse(value) == null) {
-                      return "Amount cannot be empty!";
+                      return "Amount must be a number!";
                     }
                     return null;
                   },
