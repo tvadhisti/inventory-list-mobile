@@ -296,3 +296,296 @@ In Flutter, Clean Architecture means arranging our code in different layers so i
     
 13. Design Patterns: Refers to the use of design patterns to achieve clean code
 
+
+**5. Steps in Implementing the Task**
+
+1. Create at least one new page in the application, a page for adding a new item
+
+I made a new page in the app where users can add a new item. To do this, I created a file called "shoplist_form.dart" and added some code to it. This code includes things like importing necessary Flutter components and defining a page called ShopFormPage. Inside this page, I set up a form with fields for the product's name, amount, and description.
+
+The form also has an AppBar at the top, making it look nice with a title "Add Product Form" and a colored background. To make navigation easy, I added a left drawer to the page. The actual form is set up using a Form widget, and I used a SingleChildScrollView widget to allow for smooth scrolling if the form is long. Inside the form, I placed the input fields in a Column widget to keep things organized.
+```
+import 'package:flutter/material.dart';
+import 'package:inventory_management/widgets/left_drawer.dart';
+
+class ShopFormPage extends StatefulWidget {
+  const ShopFormPage({super.key});
+
+  @override
+  State<ShopFormPage> createState() => _ShopFormPageState();
+}
+
+class _ShopFormPageState extends State<ShopFormPage> {
+  final _formKey = GlobalKey<FormState>();
+  String _name = "";
+  int _amount = 0;
+  String _description = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Center(
+          child: Text(
+            'Add Product Form',
+          ),
+        ),
+        backgroundColor: Colors.cyan,
+        foregroundColor: Colors.white,
+      ),
+      drawer: const LeftDrawer(),
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+child: Column(),)
+	),
+	);
+	}
+	}
+```
+
+I added more details to the form by putting in three boxes for users to fill in. Each box is for the item's name, amount, and description.
+
+For the item's name, there's a box with a hint like "Item Name" and a label saying the same. It also has a border to make it look nice. When users type in something, it updates the name. If they leave it empty, there's a message saying "Name cannot be empty!"
+
+I did the same thing for the amount box and the description box. The amount box takes numbers, and the description box is for adding more details about the item. The validation checks make sure these boxes aren't left empty, and if they are, it gives a message accordingly.
+
+This makes the form more complete, and users can now enter the name, amount, and description of the item they want to add.
+
+```
+child: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        decoration: InputDecoration(
+          hintText: "Item Name",
+          labelText: "Item Name",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+        ),
+        onChanged: (String? value) {
+          setState(() {
+            _name = value!;
+          });
+        },
+        validator: (String? value) {
+          if (value == null || value.isEmpty) {
+            return "Name cannot be empty!";
+          }
+          return null;
+        },
+      ),
+    ),
+    // Additional TextFormField for Amount
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        decoration: InputDecoration(
+          hintText: "Amount",
+          labelText: "Amount",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+        ),
+        onChanged: (String? value) {
+          setState(() {
+            _amount = int.parse(value!);
+          });
+        },
+        validator: (String? value) {
+          if (value == null || value.isEmpty) {
+            return "Amount cannot be empty!";
+          }
+          return null;
+        },
+      ),
+    ),
+    // Additional TextFormField for Description
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        decoration: InputDecoration(
+          hintText: "Description",
+          labelText: "Description",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+        ),
+        onChanged: (String? value) {
+          setState(() {
+            _description = value!;
+          });
+        },
+        validator: (String? value) {
+          if (value == null || value.isEmpty) {
+            return "Description cannot be empty!";
+          }
+          return null;
+        },
+      ),
+    ),
+  ],
+),
+```
+
+I included a "Save" button to the form, which is designed with an ElevatedButton wrapped in Padding and Align for proper placement. Inside the onPressed() section of the button, I implemented the showDialog() function to display an AlertDialog widget. This AlertDialog confirms that the product has been successfully saved and shows the entered details such as the name, amount, and description. Additionally, a function is added to reset the form.
+```
+Align(
+  alignment: Alignment.bottomCenter,
+  child: Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.cyan),
+      ),
+      onPressed: () {
+        if (_formKey.currentState!.validate()) {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Product successfully saved'),
+                content: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Name: $_name'),
+                      Text('Amount: $_amount'),
+                      Text('Description: $_description'),
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+          // Add a function to reset the form here if needed
+        }
+      },
+      child: const Text(
+        "Save",
+        style: TextStyle(color: Colors.white),
+      ),
+    ),
+  ),
+),
+```
+
+To enable navigation from the menu, I updated the children in the myhomepage class in menu.dart. The modification includes using the Navigator.push method to navigate to the ShopFormPage when the "Add Items" button is clicked.
+```
+children: items.map<Widget>((InvItem item) {
+  return ShopCard(item, onTap: () {
+    if (item.name == 'Add Items') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ShopFormPage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("You clicked the ${item.name} button!"),
+        ),
+      );
+    }
+  });
+}).toList(),
+```
+
+Additionally, the onTap property in the ShopCard class is now set to onTap, ensuring that the onTap function passed as a parameter is called when the card is tapped.
+
+2. Create a drawer in the application
+
+I created a new file called "left_drawer.dart" and added code for a Drawer widget, importing necessary packages and the ShopFormPage. The Drawer includes a header with the app name and a brief description. Two ListTiles are added for navigation - one leading to the Homepage (MyHomePage) and the other leading to the Add Item page (ShopFormPage). The onTap functions use the Navigator to replace the current page with the respective destination.
+```
+import 'package:flutter/material.dart';
+import 'package:inventory_management/screens/menu.dart';
+import 'package:inventory_management/screens/shoplist_form.dart';
+
+class LeftDrawer extends StatelessWidget {
+  const LeftDrawer({Key? key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.cyan,
+            ),
+            child: Column(
+              children: [
+                Text(
+                  'shopVentory',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(10)),
+                Text(
+                  "Write all your inventory list here!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.home_outlined),
+            title: const Text('Homepage'),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyHomePage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add_shopping_cart),
+            title: const Text('Add Item'),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => ShopFormPage()),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+In menu.dart, I imported the LeftDrawer widget and added it to the Scaffold drawer property.
+```
+import 'package:inventory_management/widgets/left_drawer.dart';
+
+...
+
+Scaffold(
+  drawer: const LeftDrawer(),
+  // Other Scaffold properties...
+);
+```
+Now, the drawer is included in the menu, providing easy navigation to the Homepage and Add Item page.
