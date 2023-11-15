@@ -15,7 +15,7 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-
+*** 
 ## Assignment 7
 
 **1. Stateless Widget vs Stateful Widget in Flutter**
@@ -228,7 +228,7 @@ child: InkWell(
 ```
 
 
-
+*** 
 
 ## Assignment 8
 
