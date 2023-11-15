@@ -20,7 +20,7 @@ class _ShopFormPageState extends State<ShopFormPage> {
       appBar: AppBar(
         title: const Center(
           child: Text(
-            'Add Product Form',
+            'Add Item Form',
           ),
         ),
         backgroundColor: Colors.cyan,

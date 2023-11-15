@@ -313,7 +313,7 @@ In Flutter, Clean Architecture means arranging our code in different layers so i
 
 I made a new page in the app where users can add a new item. To do this, I created a file called "shoplist_form.dart" and added some code to it. This code includes things like importing necessary Flutter components and defining a page called ShopFormPage. Inside this page, I set up a form with fields for the product's name, amount, and description.
 
-The form also has an AppBar at the top, making it look nice with a title "Add Product Form" and a colored background. To make navigation easy, I added a left drawer to the page. The actual form is set up using a Form widget, and I used a SingleChildScrollView widget to allow for smooth scrolling if the form is long. Inside the form, I placed the input fields in a Column widget to keep things organized.
+The form also has an AppBar at the top, making it look nice with a title "Add Item Form" and a colored background. To make navigation easy, I added a left drawer to the page. The actual form is set up using a Form widget, and I used a SingleChildScrollView widget to allow for smooth scrolling if the form is long. Inside the form, I placed the input fields in a Column widget to keep things organized.
 ```
 import 'package:flutter/material.dart';
 import 'package:inventory_management/widgets/left_drawer.dart';
@@ -337,7 +337,7 @@ class _ShopFormPageState extends State<ShopFormPage> {
       appBar: AppBar(
         title: const Center(
           child: Text(
-            'Add Product Form',
+            'Add Item Form',
           ),
         ),
         backgroundColor: Colors.cyan,

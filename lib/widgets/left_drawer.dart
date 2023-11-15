@@ -42,7 +42,7 @@ class LeftDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.home_outlined),
-            title: const Text('Homepage'),
+            title: const Text('Home'),
             // redirect to MyHomePage
             onTap: () {
               Navigator.pushReplacement(

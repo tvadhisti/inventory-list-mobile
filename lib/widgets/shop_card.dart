@@ -21,7 +21,7 @@ class ShopCard extends StatelessWidget {
                 content: Text("You pressed the ${item.name} button!")));
 
           // Navigate to the appropriate route (depending on the button type)
-          if (item.name == "Add Product") {
+          if (item.name == "Add Items") {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => ShopFormPage()),
