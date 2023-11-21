@@ -729,4 +729,480 @@ Once the data is fetched, use Flutter widgets (e.g., ListView, GridView) to disp
 16. LoginPage: Represents the initial screen where users can enter their login credentials.
 
 
+**6. Steps in Implementing the Taks**
+
+1. Create a login page in the Flutter project.
+
+I created a new file named login.dart in the screen folder and added the following code:
+```
+import 'package:inventory_management/screens/menu.dart';
+import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+
+void main() {
+  runApp(const LoginApp());
+}
+
+class LoginApp extends StatelessWidget {
+  const LoginApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Login',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const LoginPage(),
+    );
+  }
+}
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Login'),
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: _usernameController,
+              decoration: const InputDecoration(
+                labelText: 'Username',
+              ),
+            ),
+            const SizedBox(height: 12.0),
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                labelText: 'Password',
+              ),
+              obscureText: true,
+            ),
+            const SizedBox(height: 24.0),
+            ElevatedButton(
+              onPressed: () async {
+                String username = _usernameController.text;
+                String password = _passwordController.text;
+
+                // Check credentials
+                // TODO: Change the URL and don't forget to add a trailing slash (/) at the end of the URL!
+                // To connect the Android emulator to Django on localhost,
+                // use the URL http://10.0.2.2/
+                final response =
+                    await request.login("http://127.0.0.1:8000/auth/login/", {
+                  'username': username,
+                  'password': password,
+                });
+
+                if (request.loggedIn) {
+                  String message = response['message'];
+                  String uname = response['username'];
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyHomePage()),
+                  );
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                        SnackBar(content: Text("$message Welcome, $uname.")));
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Login Failed'),
+                      content: Text(response['message']),
+                      actions: [
+                        TextButton(
+                          child: const Text('OK'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+              child: const Text('Login'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+In the main.dart file, in the MaterialApp(...) widget, I changed home: MyHomePage() to home: LoginPage()
+
+2. Integrate the Django authentication system with the Flutter project.
+
+Initially, I configured authentication in Django by creating a new app named 'authentication.' To ensure compatibility, I installed the necessary library using the command pip install django-cors-headers in the terminal. Then, I adjusted the settings.py file in my Django application.
+
+After that, I created a new function in the 'authentication' app's views.py and added the path in the urls.py. 
+```
+@csrf_exempt
+def login(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        if user.is_active:
+            auth_login(request, user)
+            # Successful login status.
+            return JsonResponse({
+                "username": user.username,
+                "status": True,
+                "message": "Login successful!"
+                # Add other data if you want to send data to Flutter.
+            }, status=200)
+        else:
+            return JsonResponse({
+                "status": False,
+                "message": "Login failed, account disabled."
+            }, status=401)
+
+    else:
+        return JsonResponse({
+            "status": False,
+            "message": "Login failed, check email or password again."
+        }, status=401)
+```
+
+To fit this authentication setup into the whole project, I added the path 'auth/', include('authentication.urls') in the 'shopping_list' app's urls.py.
+
+Once the setup was done, I run two packages for the Flutter app:
+```
+flutter pub add provider
+flutter pub add pbp_django_auth
+```
+
+Following this, I made modifications to the main.dart file. I imported the required dependencies, including the login screen.
+```
+import 'package:flutter/material.dart';
+import 'package:inventory_management/screens/login.dart';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Provider(
+      create: (_) {
+        CookieRequest request = CookieRequest();
+        return request;
+      },
+      child: MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+            useMaterial3: true,
+          ),
+          home: LoginPage()),
+    );
+  }
+}
+
+```
+
+3. Create a custom model according to your Django application project.
+
+I created a new directory named 'model' and made a file named 'item.dart'. Next, I copied the code that I had previously generated using Quicktype and pasted it into 'item.dart':
+```
+import 'dart:convert';
+
+List<Item> itemFromJson(String str) =>
+    List<Item>.from(json.decode(str).map((x) => Item.fromJson(x)));
+
+String itemToJson(List<Item> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class Item {
+  String model;
+  int pk;
+  Fields fields;
+
+  Item({
+    required this.model,
+    required this.pk,
+    required this.fields,
+  });
+
+  factory Item.fromJson(Map<String, dynamic> json) => Item(
+        model: json["model"],
+        pk: json["pk"],
+        fields: Fields.fromJson(json["fields"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "model": [model],
+        "pk": pk,
+        "fields": fields.toJson(),
+      };
+}
+
+class Fields {
+  String name;
+  DateTime dateAdded;
+  int amount;
+  String description;
+  int user;
+
+  Fields({
+    required this.name,
+    required this.dateAdded,
+    required this.amount,
+    required this.description,
+    required this.user,
+  });
+
+  factory Fields.fromJson(Map<String, dynamic> json) => Fields(
+        name: json["name"],
+        dateAdded: DateTime.parse(json["date_added"]),
+        amount: json["amount"],
+        description: json["description"],
+        user: json["user"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "date_added":
+            "${dateAdded.year.toString().padLeft(4, '0')}-${dateAdded.month.toString().padLeft(2, '0')}-${dateAdded.day.toString().padLeft(2, '0')}",
+        "amount": amount,
+        "description": description,
+        "user": user,
+      };
+}
+```
+This Dart file helps with reading and writing JSON data according to a specific model for the Django app.
+
+4. Create a page containing a list of all items available at the JSON endpoint in Django that you have deployed. Display the name, amount, and description of each item on this page.
+
+I created a new file in the lib/screens directory with name list_item.dart and added the following code:
+```
+import 'package:flutter/material.dart';
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
+import 'package:inventory_management/models/item.dart';
+import 'package:inventory_management/widgets/left_drawer.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:inventory_management/screens/detail_item.dart';
+
+class ProductPage extends StatefulWidget {
+  const ProductPage({Key? key}) : super(key: key);
+
+  @override
+  _ProductPageState createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> {
+  Future<List<Item>> fetchProduct() async {
+    // final request = context.watch<CookieRequest>();
+    // var url = Uri.parse("http://127.0.0.1:8000/auth/json/");
+    // var response = await http.get(
+    //   url,
+    //   headers: {"Content-Type": "application/json"},
+    // );
+    final request = context.watch<CookieRequest>();
+    final response = await request.get('http://127.0.0.1:8000/json/');
+
+    // decode the response to JSON
+    // var data = jsonDecode(utf8.decode(response.bodyBytes));
+
+    // convert the JSON to Product object
+    List<Item> list_product = [];
+    for (var d in response) {
+      if (d != null) {
+        list_product.add(Item.fromJson(d));
+      }
+    }
+    return list_product;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('View Items'),
+          backgroundColor: Color.fromARGB(255, 48, 150, 198),
+          foregroundColor: Colors.white,
+        ),
+        drawer: const LeftDrawer(),
+        body: FutureBuilder(
+            future: fetchProduct(),
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.data == null) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                if (!snapshot.hasData) {
+                  return const Column(
+                    children: [
+                      Text(
+                        "No item data available.",
+                        style:
+                            TextStyle(color: Color(0xff59A5D8), fontSize: 20),
+                      ),
+                      SizedBox(height: 8),
+                    ],
+                  );
+                } else {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (_, index) => Card(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 12),
+                      // Wrap the ListTile in a GestureDetector to make it tappable
+                      child: GestureDetector(
+                        onTap: () {
+                          // Navigate to the detail page when an item is tapped
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ItemDetailPage(item: snapshot.data![index]),
+                            ),
+                          );
+                        },
+                        child: ListTile(
+                          title: Text(
+                            "${snapshot.data![index].fields.name}",
+                            style: const TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: Text(
+                              "Amount: ${snapshot.data![index].fields.amount} \nDescription: ${snapshot.data![index].fields.description}"),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              }
+            }));
+  }
+}
+```
+
+I Added the page list_item.dart to widgets/left_drawer.dart by adding this code:
+```
+ListTile(
+    leading: const Icon(Icons.shopping_basket),
+    title: const Text('Item List'),
+    onTap: () {
+        // Route menu to product page
+        Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ProductPage()),
+        );
+    },
+),
+```
+
+I also changed the function of the "View Items" button on the shop_card page to redirect to the ProductPage:
+```
+else if (item.name == "View Items") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const ProductPage()));
+          } else if (item.name == "Logout") {
+
+```
+
+5. Create a detail page for each item listed on the Item list page.
+
+• This page can be accessed by tapping on any item on the Item list page.
+
+• Display all attributes of your item model on this page.
+
+• Add a button to return to the item list page.
+
+I created a new file in the screen folder named detail_item.dart and added the following code:
+```
+import 'package:flutter/material.dart';
+import 'package:inventory_management/models/item.dart';
+
+class ItemDetailPage extends StatelessWidget {
+  final Item item;
+
+  const ItemDetailPage({Key? key, required this.item}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Item Details'),
+        backgroundColor: Color.fromARGB(255, 48, 150, 198),
+        foregroundColor: Colors.white,
+      ),
+      body: Center(
+        child: Card(
+          elevation: 10.0, // Add a shadow
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0), // Add rounded corners
+          ),
+          margin: const EdgeInsets.all(20.0),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  item.fields.name,
+                  style: const TextStyle(
+                    fontSize: 24.0, // Increase font size
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 15),
+                Text(
+                  "Amount: ${item.fields.amount}",
+                  style: const TextStyle(fontSize: 18.0),
+                ),
+                const SizedBox(height: 15),
+                Text(
+                  "Description: ${item.fields.description}",
+                  style: const TextStyle(fontSize: 18.0),
+                ),
+                const SizedBox(height: 15),
+              ],
+            ),
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context); // Return to the item list page
+        },
+        child: const Icon(Icons.arrow_back),
+      ),
+    );
+  }
+}
+```
 
