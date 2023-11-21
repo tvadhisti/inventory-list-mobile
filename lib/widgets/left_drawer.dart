@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:inventory_management/screens/menu.dart';
 // DONE TODO: Import the ShopFormPage page here
 import 'package:inventory_management/screens/shoplist_form.dart';
-import 'package:inventory_management/screens/list_product.dart';
+import 'package:inventory_management/screens/list_item.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});

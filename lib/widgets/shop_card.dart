@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:inventory_management/screens/list_product.dart';
+import 'package:inventory_management/screens/list_item.dart';
 import 'package:inventory_management/screens/login.dart';
 import 'package:inventory_management/screens/menu.dart';
 import 'package:inventory_management/screens/shoplist_form.dart';
