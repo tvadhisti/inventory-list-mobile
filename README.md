@@ -733,7 +733,7 @@ Once the data is fetched, use Flutter widgets (e.g., ListView, GridView) to disp
 
 1. Create a login page in the Flutter project.
 
-I created a new file named login.dart in the screen folder and added the following code:
+I created a new file named ```login.dart``` in the screen folder and added the following code:
 ```
 import 'package:inventory_management/screens/menu.dart';
 import 'package:flutter/material.dart';
@@ -851,13 +851,13 @@ class _LoginPageState extends State<LoginPage> {
 }
 ```
 
-In the main.dart file, in the MaterialApp(...) widget, I changed home: MyHomePage() to home: LoginPage()
+In the main.dart file, in the MaterialApp(...) widget, I changed ```home: MyHomePage()``` to ```home: LoginPage()```
 
 2. Integrate the Django authentication system with the Flutter project.
 
 Initially, I configured authentication in Django by creating a new app named 'authentication.' To ensure compatibility, I installed the necessary library using the command pip install django-cors-headers in the terminal. Then, I adjusted the settings.py file in my Django application.
 
-After that, I created a new function in the 'authentication' app's views.py and added the path in the urls.py. 
+After that, I created a new function in the 'authentication' app's ```views.py``` and added the path in the ```urls.py```. 
 ```
 @csrf_exempt
 def login(request):
@@ -887,7 +887,7 @@ def login(request):
         }, status=401)
 ```
 
-To fit this authentication setup into the whole project, I added the path 'auth/', include('authentication.urls') in the 'shopping_list' app's urls.py.
+To fit this authentication setup into the whole project, I added the ```path('auth/', include('authentication.urls'))``` in the ```shopping_list``` app's ```urls.py```.
 
 Once the setup was done, I run two packages for the Flutter app:
 ```
@@ -895,7 +895,7 @@ flutter pub add provider
 flutter pub add pbp_django_auth
 ```
 
-Following this, I made modifications to the main.dart file. I imported the required dependencies, including the login screen.
+Following this, I made modifications to the ```main.dart``` file. I imported the required dependencies, including the login screen.
 ```
 import 'package:flutter/material.dart';
 import 'package:inventory_management/screens/login.dart';
@@ -931,7 +931,7 @@ class MyApp extends StatelessWidget {
 
 3. Create a custom model according to your Django application project.
 
-I created a new directory named 'model' and made a file named 'item.dart'. Next, I copied the code that I had previously generated using Quicktype and pasted it into 'item.dart':
+I created a new directory named 'model' and made a file named ```item.dart```. Next, I copied the code that I had previously generated using Quicktype and pasted it into ```item.dart```:
 ```
 import 'dart:convert';
 
@@ -1002,7 +1002,7 @@ This Dart file helps with reading and writing JSON data according to a specific 
 
 4. Create a page containing a list of all items available at the JSON endpoint in Django that you have deployed. Display the name, amount, and description of each item on this page.
 
-I created a new file in the lib/screens directory with name list_item.dart and added the following code:
+I created a new file in the lib/screens directory with name ```list_item.dart``` and added the following code:
 ```
 import 'package:flutter/material.dart';
 // import 'package:http/http.dart' as http;
@@ -1109,7 +1109,7 @@ class _ProductPageState extends State<ProductPage> {
 }
 ```
 
-I Added the page list_item.dart to widgets/left_drawer.dart by adding this code:
+I Added the page ```list_item.dart``` to widgets/left_drawer.dart by adding this code:
 ```
 ListTile(
     leading: const Icon(Icons.shopping_basket),
@@ -1141,7 +1141,7 @@ else if (item.name == "View Items") {
 
 • Add a button to return to the item list page.
 
-I created a new file in the screen folder named detail_item.dart and added the following code:
+I created a new file in the screen folder named ```detail_item.dart``` and added the following code:
 ```
 import 'package:flutter/material.dart';
 import 'package:inventory_management/models/item.dart';
