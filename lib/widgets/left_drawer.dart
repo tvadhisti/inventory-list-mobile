@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:inventory_management/screens/menu.dart';
 // DONE TODO: Import the ShopFormPage page here
 import 'package:inventory_management/screens/shoplist_form.dart';
+import 'package:inventory_management/screens/list_product.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -13,7 +14,7 @@ class LeftDrawer extends StatelessWidget {
         children: [
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.cyan,
+              color: Color.fromARGB(255, 48, 150, 198),
             ),
             child: Column(
               children: [
@@ -64,6 +65,17 @@ class LeftDrawer extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => ShopFormPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.shopping_basket),
+            title: const Text('Item List'),
+            onTap: () {
+              // Route menu to product page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProductPage()),
               );
             },
           ),

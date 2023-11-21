@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:inventory_management/widgets/shop_card.dart';
 import 'package:inventory_management/widgets/left_drawer.dart';
-import 'package:inventory_management/screens/shoplist_form.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key? key}) : super(key: key);
 
   final List<InvItem> items = [
-    InvItem("View Items", Icons.checklist,
-        Color.fromARGB(255, 186, 130, 149)), // Set the color for each item
-    InvItem("Add Items", Icons.add_shopping_cart,
-        Color.fromARGB(255, 116, 102, 164)),
-    InvItem("Logout", Icons.logout, Color.fromARGB(255, 47, 129, 196)),
+    InvItem("Add Items", Icons.checklist),
+    InvItem("View Items", Icons.add_shopping_cart),
+    InvItem("Logout", Icons.logout),
   ];
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -30,6 +27,8 @@ class MyHomePage extends StatelessWidget {
         title: const Text(
           'shopVentory',
         ),
+        backgroundColor: Color.fromARGB(255, 48, 150, 198),
+        foregroundColor: Colors.white,
       ),
       drawer: const LeftDrawer(),
       body: SingleChildScrollView(
@@ -60,22 +59,9 @@ class MyHomePage extends StatelessWidget {
                 mainAxisSpacing: 10,
                 crossAxisCount: 3,
                 shrinkWrap: true,
-                children: items.map<Widget>((InvItem item) {
-                  return ShopCard(item, onTap: () {
-                    if (item.name == 'Add Items') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ShopFormPage()),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content:
-                                Text("You clicked the ${item.name} button!")),
-                      );
-                    }
-                  });
+                children: items.map((InvItem item) {
+                  // Iterasi untuk setiap item
+                  return ShopCard(item);
                 }).toList(),
               ),
             ],
@@ -86,52 +72,11 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-class ShopCard extends StatelessWidget {
-  final InvItem item;
-  final VoidCallback onTap;
-
-  const ShopCard(this.item, {required this.onTap, Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: item.buttonColor,
-      child: InkWell(
-        // Responsive touch area
-        onTap: onTap,
-        child: Container(
-          // Container to hold Icon and Text
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  item.icon,
-                  color: Colors.white,
-                  size: 30.0,
-                ),
-                const Padding(padding: EdgeInsets.all(3)),
-                Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class InvItem {
   final String name;
   final IconData icon;
-  final Color buttonColor;
 
-  InvItem(this.name, this.icon, this.buttonColor);
+  InvItem(this.name, this.icon);
 
   // Rest of the class remains the same
 }
